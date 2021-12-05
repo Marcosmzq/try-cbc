@@ -13,31 +13,21 @@ import { CheckoutModule } from './checkout/checkout.module';
 import { RolesGuard } from './users/guards/roles.guard';
 import { TerminusModule } from '@nestjs/terminus';
 import { HealthCheckController } from './health-check/health-check.controller';
-
+import * as ormConfig from './ormconfig';
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     TerminusModule,
     TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.DB_HOST,
-      database: process.env.DB_DATABASE,
-      username: process.env.DB_USERNAME,
-      port: parseInt(process.env.DB_PORT),
-      password: process.env.DB_PASSWORD,
-      synchronize: false,
+      ...ormConfig,
+      keepConnectionAlive: true,
       autoLoadEntities: true,
-      ssl: true,
-      extra: {
-        ssl: {
-          rejectUnauthorized: false,
-        },
-      },
     }),
     GraphQLModule.forRoot({
       autoSchemaFile: true,
       context: ({ req }) => ({ req }),
     }),
-    ConfigModule.forRoot(),
+
     UsersModule,
     TriviasModule,
     CheckoutModule,
