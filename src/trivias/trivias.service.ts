@@ -41,7 +41,6 @@ export class TriviasService {
       .leftJoinAndSelect('trivia.answers', 'answers')
       .orderBy('RANDOM()')
       .where({ subject, exam })
-      .take(1)
       .getOne();
   }
 
