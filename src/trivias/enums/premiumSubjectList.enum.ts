@@ -1,7 +1,7 @@
 import { registerEnumType } from '@nestjs/graphql';
 
 export enum PremiumSubjectList {
-  ICSE = 'ICSE',
+  IPC = 'IPC',
 }
 
 registerEnumType(PremiumSubjectList, {
