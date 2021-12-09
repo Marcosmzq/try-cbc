@@ -35,6 +35,15 @@ export class TriviasService {
       .getMany();
   }
 
+  randomTriviaBySubject(subject: string) {
+    return this.triviaRepository
+      .createQueryBuilder('trivia')
+      .leftJoinAndSelect('trivia.answers', 'answers')
+      .orderBy('RANDOM()')
+      .where({ subject })
+      .getOne();
+  }
+
   randomTrivia(subject: string, exam: string) {
     return this.triviaRepository
       .createQueryBuilder('trivia')

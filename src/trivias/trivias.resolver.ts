@@ -54,6 +54,14 @@ export class TriviasResolver {
     return this.triviasService.randomTrivia(subject, exam);
   }
 
+  @Query(() => Trivia, { name: 'getRandomTriviaBySubject' })
+  @UseGuards(PremiumTriviasGuard)
+  getRandonTriviaBySubject(
+    @Args('subject', { type: () => SubjectList }) subject: SubjectList,
+  ) {
+    return this.triviasService.randomTriviaBySubject(subject);
+  }
+
   @Mutation(() => Trivia, { name: 'updateTrivia' })
   @Roles(UserRole.ADMIN)
   updateTrivia(
