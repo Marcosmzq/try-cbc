@@ -1,15 +1,18 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { Subject } from 'src/subjects/entities/subject.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Answer } from '../answers/entities/answer.entity';
 import { ExamList } from '../enums/examList.enum';
-import { SubjectList } from '../enums/subjectList.enum';
+import { TriviaType } from '../enums/triviaType.enum';
 
 @Entity()
 @ObjectType()
@@ -17,6 +20,10 @@ export class Trivia {
   @Field(() => Int)
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Field(() => TriviaType)
+  @Column({ default: TriviaType.TRIVIA })
+  type: TriviaType;
 
   @Field(() => String)
   @CreateDateColumn()
@@ -30,6 +37,10 @@ export class Trivia {
   @Column()
   statement: string;
 
+  @Field(() => String)
+  @Column({ nullable: true })
+  source: string;
+
   @Field(() => String, { nullable: true })
   @Column({ nullable: true })
   feedback: string;
@@ -38,11 +49,16 @@ export class Trivia {
   @Column()
   exam: ExamList;
 
-  @Field(() => SubjectList)
-  @Column()
-  subject: SubjectList;
+  @Field(() => Subject)
+  @ManyToOne(() => Subject, {
+    eager: true,
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'subject_id', referencedColumnName: 'id' })
+  subject: Subject;
 
   @Field(() => [Answer])
-  @OneToMany((type) => Answer, (answer) => answer.trivia)
+  @OneToMany(() => Answer, (answer) => answer.trivia)
   answers: Answer[];
 }

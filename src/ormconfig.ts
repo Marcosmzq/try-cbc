@@ -3,9 +3,10 @@ import { Answer } from './trivias/answers/entities/answer.entity';
 import { Trivia } from './trivias/entities/trivia.entity';
 import { User } from './users/entities/user.entity';
 import { ConfigModule } from '@nestjs/config';
+import { Subject } from './subjects/entities/subject.entity';
 ConfigModule.forRoot();
 
-const ormConfig: ConnectionOptions = {
+const ormConfigProd: ConnectionOptions = {
   type: 'postgres',
   host: process.env.DB_HOST,
   port: parseInt(process.env.DB_PORT),
@@ -25,7 +26,18 @@ const ormConfig: ConnectionOptions = {
   cli: {
     migrationsDir: 'src/migrations',
   },
-  entities: [User, Trivia, Answer],
+  entities: [User, Trivia, Answer, Subject],
 };
+
+const ormConfigDev: ConnectionOptions = {
+  type: 'sqlite',
+  database: 'db',
+  entities: [User, Trivia, Answer, Subject],
+  dropSchema: true,
+  synchronize: true,
+};
+
+const ormConfig =
+  process.env.NODE_ENV === 'development' ? ormConfigDev : ormConfigProd;
 
 export = ormConfig;

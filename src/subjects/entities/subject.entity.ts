@@ -5,15 +5,13 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   Column,
+  OneToMany,
   Entity,
-  ManyToOne,
-  JoinColumn,
 } from 'typeorm';
-import { AnswerType } from '../enums/answerType.enum';
 
 @Entity()
 @ObjectType()
-export class Answer {
+export class Subject {
   @Field(() => Int)
   @PrimaryGeneratedColumn()
   id: number;
@@ -28,22 +26,13 @@ export class Answer {
 
   @Field(() => String)
   @Column()
-  statement: string;
+  name: string;
 
   @Field(() => Boolean)
   @Column()
-  isTrue: boolean;
+  isPremium: boolean;
 
-  @Field(() => AnswerType)
-  @Column()
-  type: AnswerType;
-
-  @Field(() => Int)
-  @Column()
-  trivia_id: number;
-
-  @Field(() => Trivia)
-  @ManyToOne(() => Trivia, { eager: true })
-  @JoinColumn({ name: 'trivia_id', referencedColumnName: 'id' })
-  trivia: Trivia;
+  @Field(() => [Trivia])
+  @OneToMany(() => Trivia, (trivia) => trivia.subject)
+  trivias: Trivia[];
 }

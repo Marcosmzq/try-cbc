@@ -1,13 +1,18 @@
-import { InputType, Field } from '@nestjs/graphql';
-import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
+import { InputType, Field, Int } from '@nestjs/graphql';
+import { IsString, IsNotEmpty, IsOptional, IsInt } from 'class-validator';
 import { ExamList } from '../enums/examList.enum';
-import { SubjectList } from '../enums/subjectList.enum';
+import { TriviaType } from '../enums/triviaType.enum';
 
 @InputType()
 export class CreateTriviaInput {
-  @Field(() => SubjectList)
+  @IsInt()
   @IsNotEmpty()
-  subject: SubjectList;
+  @Field(() => Int)
+  subject_id: number;
+
+  @Field(() => TriviaType)
+  @IsNotEmpty()
+  type: TriviaType;
 
   @Field(() => ExamList)
   @IsNotEmpty()
@@ -17,6 +22,11 @@ export class CreateTriviaInput {
   @IsString()
   @IsNotEmpty()
   statement: string;
+
+  @Field(() => String)
+  @IsString()
+  @IsNotEmpty()
+  source: string;
 
   @Field(() => String, { nullable: true })
   @IsOptional()

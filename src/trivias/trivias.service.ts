@@ -1,19 +1,33 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Subject } from 'src/subjects/entities/subject.entity';
 import { Repository } from 'typeorm';
 import { CreateTriviaInput } from './dto/create-trivia.input';
 import { UpdateTriviaInput } from './dto/update-trivia.input';
 import { Trivia } from './entities/trivia.entity';
+import { TriviaType } from './enums/triviaType.enum';
 
 @Injectable()
 export class TriviasService {
   constructor(
     @InjectRepository(Trivia)
     private readonly triviaRepository: Repository<Trivia>,
+    @InjectRepository(Subject)
+    private readonly subjectRepository: Repository<Subject>,
   ) {}
 
-  create(createTriviaInput: CreateTriviaInput) {
-    const trivia = this.triviaRepository.create(createTriviaInput);
+  async create(createTriviaInput: CreateTriviaInput) {
+    const { statement, exam, subject_id, feedback, type, source } =
+      createTriviaInput;
+    const subject = await this.subjectRepository.findOne(subject_id);
+    const trivia = this.triviaRepository.create({
+      statement,
+      exam,
+      feedback,
+      subject,
+      type,
+      source,
+    });
     return this.triviaRepository.save(trivia);
   }
 
@@ -25,41 +39,30 @@ export class TriviasService {
     return this.triviaRepository.findOne(id, { relations: ['answers'] });
   }
 
-  triviaQuiz(subject: string, exam: string, limit?: number) {
+  async randomTrivia(subject_id: number, exam: string, type: TriviaType) {
+    const subject = await this.subjectRepository.findOne(subject_id);
     return this.triviaRepository
       .createQueryBuilder('trivia')
       .leftJoinAndSelect('trivia.answers', 'answers')
+      .leftJoinAndSelect('trivia.subject', 'subject')
       .orderBy('RANDOM()')
-      .where({ subject, exam })
-      .limit(limit || 10)
-      .getMany();
-  }
-
-  randomTriviaBySubject(subject: string) {
-    return this.triviaRepository
-      .createQueryBuilder('trivia')
-      .leftJoinAndSelect('trivia.answers', 'answers')
-      .orderBy('RANDOM()')
-      .where({ subject })
-      .getOne();
-  }
-
-  randomTrivia(subject: string, exam: string) {
-    return this.triviaRepository
-      .createQueryBuilder('trivia')
-      .leftJoinAndSelect('trivia.answers', 'answers')
-      .orderBy('RANDOM()')
-      .where({ subject, exam })
+      .where({ subject, type, ...(exam && { exam }) })
       .getOne();
   }
 
   async update(id: number, updateTriviaInput: UpdateTriviaInput) {
-    const { statement, exam, subject, feedback } = updateTriviaInput;
+    const { statement, exam, subject_id, feedback, type, source } =
+      updateTriviaInput;
     const trivia = await this.triviaRepository.findOne(id);
+    if (type) trivia.type = type;
     if (exam) trivia.exam = exam;
-    if (subject) trivia.subject = subject;
     if (statement) trivia.statement = statement;
     if (feedback) trivia.feedback = feedback;
+    if (source) trivia.source = source;
+    if (subject_id) {
+      const newSubject = await this.subjectRepository.findOne(subject_id);
+      trivia.subject = newSubject;
+    }
 
     return this.triviaRepository.save(trivia);
   }

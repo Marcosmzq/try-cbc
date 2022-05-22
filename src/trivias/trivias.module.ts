@@ -5,9 +5,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Trivia } from './entities/trivia.entity';
 import { AnswersModule } from './answers/answers.module';
 import { JwtService } from 'src/jwt/jwt.service';
+import { Subject } from 'src/subjects/entities/subject.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Trivia]), AnswersModule],
+  imports: [TypeOrmModule.forFeature([Trivia, Subject]), AnswersModule],
   providers: [TriviasResolver, TriviasService, JwtService],
 })
 export class TriviasModule {}

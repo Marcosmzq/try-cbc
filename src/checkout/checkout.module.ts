@@ -3,6 +3,6 @@ import { CheckoutService } from './checkout.service';
 import { CheckoutResolver } from './checkout.resolver';
 
 @Module({
-  providers: [CheckoutResolver, CheckoutService]
+  providers: [CheckoutResolver, CheckoutService],
 })
 export class CheckoutModule {}

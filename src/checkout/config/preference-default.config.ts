@@ -5,13 +5,13 @@ export const preferenceDefaultConfig = (userID: number) => {
     external_reference: userID.toString(),
     items: [
       {
-        title: 'Mejorar tu cuenta de tryCBC',
+        title: 'Comprar cuenta PREMIUN de tryCBC',
         category_id: 'learnings',
         currency_id: 'ARS',
         unit_price: 350,
         quantity: 1,
         description:
-          'Potencia tu cuenta de tryCBC comprando premiun y desbloquea beneficios exclusivos.',
+          'Potencia tu cuenta de tryCBC y desbloquea beneficios, ejercicios y materias exlusivas. ¡Mejora tu cuenta y lleva tu aprendizaje a otro nivel!',
       },
     ],
     back_urls: {

@@ -3,12 +3,12 @@ import { TriviasService } from './trivias.service';
 import { Trivia } from './entities/trivia.entity';
 import { CreateTriviaInput } from './dto/create-trivia.input';
 import { UpdateTriviaInput } from './dto/update-trivia.input';
-import { SubjectList } from './enums/subjectList.enum';
 import { ExamList } from './enums/examList.enum';
 import { Roles } from 'src/docorators/roles.decorator';
 import { UserRole } from 'src/users/enums/userRole.enum';
 import { UseGuards, ValidationPipe } from '@nestjs/common';
 import { PremiumTriviasGuard } from './guards/premium-trivias.guard';
+import { TriviaType } from './enums/triviaType.enum';
 
 @Resolver(() => Trivia)
 export class TriviasResolver {
@@ -35,31 +35,14 @@ export class TriviasResolver {
     return this.triviasService.findOne(id);
   }
 
-  @Query(() => [Trivia], { name: 'getTriviaQuiz' })
-  @Roles(UserRole.ADMIN)
-  getTriviaQuiz(
-    @Args('subject', { type: () => SubjectList }) subject: SubjectList,
-    @Args('exam', { type: () => ExamList }) exam: ExamList,
-    @Args('limit', { type: () => Int, nullable: true }) limit: number,
-  ) {
-    return this.triviasService.triviaQuiz(subject, exam, limit);
-  }
-
   @Query(() => Trivia, { name: 'getRandomTriviaByParams' })
   @UseGuards(PremiumTriviasGuard)
   getRandomTrivia(
-    @Args('subject', { type: () => SubjectList }) subject: SubjectList,
-    @Args('exam', { type: () => ExamList }) exam: ExamList,
+    @Args('subject_id', { type: () => Int }) subject_id: number,
+    @Args('type', { type: () => TriviaType }) type: TriviaType,
+    @Args('exam', { type: () => ExamList, nullable: true }) exam: ExamList,
   ) {
-    return this.triviasService.randomTrivia(subject, exam);
-  }
-
-  @Query(() => Trivia, { name: 'getRandomTriviaBySubject' })
-  @UseGuards(PremiumTriviasGuard)
-  getRandonTriviaBySubject(
-    @Args('subject', { type: () => SubjectList }) subject: SubjectList,
-  ) {
-    return this.triviasService.randomTriviaBySubject(subject);
+    return this.triviasService.randomTrivia(subject_id, exam, type);
   }
 
   @Mutation(() => Trivia, { name: 'updateTrivia' })
