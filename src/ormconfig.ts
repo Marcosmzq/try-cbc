@@ -1,9 +1,9 @@
 import { ConnectionOptions } from 'typeorm';
-import { Answer } from './trivias/answers/entities/answer.entity';
 import { Trivia } from './trivias/entities/trivia.entity';
 import { User } from './users/entities/user.entity';
 import { ConfigModule } from '@nestjs/config';
 import { Subject } from './subjects/entities/subject.entity';
+import { TriviasAnswer } from './trivias-answers/entities/trivias-answer.entity';
 ConfigModule.forRoot();
 
 const ormConfigProd: ConnectionOptions = {
@@ -16,28 +16,29 @@ const ormConfigProd: ConnectionOptions = {
   synchronize: false,
   ssl: true,
   migrationsRun: true,
+  migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
+  cli: {
+    migrationsDir: 'src/migrations',
+  },
   logging: true,
   extra: {
     ssl: {
       rejectUnauthorized: false,
     },
   },
-  migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
-  cli: {
-    migrationsDir: 'src/migrations',
-  },
-  entities: [User, Trivia, Answer, Subject],
+  entities: [User, Trivia, TriviasAnswer, Subject],
 };
 
 const ormConfigDev: ConnectionOptions = {
   type: 'sqlite',
   database: 'db',
-  entities: [User, Trivia, Answer, Subject],
+  entities: [User, Trivia, TriviasAnswer, Subject],
   dropSchema: true,
   synchronize: true,
+  logging: true,
 };
 
 const ormConfig =
-  process.env.NODE_ENV === 'development' ? ormConfigDev : ormConfigProd;
+  process.env.NODE_ENV === 'production' ? ormConfigProd : ormConfigDev;
 
 export = ormConfig;
