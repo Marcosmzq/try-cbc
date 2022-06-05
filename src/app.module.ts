@@ -14,6 +14,7 @@ import { RolesGuard } from './users/guards/roles.guard';
 import { TerminusModule } from '@nestjs/terminus';
 import { HealthCheckController } from './health-check/health-check.controller';
 import { SubjectsModule } from './subjects/subjects.module';
+import { TriviasAnswersModule } from './trivias-answers/trivias-answers.module';
 import * as ormConfig from './ormconfig';
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import * as ormConfig from './ormconfig';
     TriviasModule,
     CheckoutModule,
     SubjectsModule,
+    TriviasAnswersModule,
   ],
   controllers: [AppController, HealthCheckController],
   providers: [

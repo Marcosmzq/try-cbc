@@ -1,9 +1,9 @@
 import { InputType, Int, Field } from '@nestjs/graphql';
 import { IsBoolean, IsInt, IsNotEmpty, IsString } from 'class-validator';
-import { AnswerType } from '../enums/answerType.enum';
+import { TriviasAnswerType } from '../enums/triviasAnswerType.enum';
 
 @InputType()
-export class CreateAnswerInput {
+export class CreateTriviasAnswerInput {
   @IsInt()
   @IsNotEmpty()
   @Field(() => Int)
@@ -21,6 +21,6 @@ export class CreateAnswerInput {
 
   @IsString()
   @IsNotEmpty()
-  @Field(() => AnswerType)
-  type: AnswerType;
+  @Field(() => TriviasAnswerType)
+  type: TriviasAnswerType;
 }

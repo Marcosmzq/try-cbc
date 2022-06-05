@@ -27,6 +27,7 @@ export class TriviasService {
       subject,
       type,
       source,
+      subject_id,
     });
     return this.triviaRepository.save(trivia);
   }

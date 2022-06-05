@@ -1,19 +1,19 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Trivia } from 'src/trivias/entities/trivia.entity';
 import {
+  Entity,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
   Column,
-  Entity,
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { AnswerType } from '../enums/answerType.enum';
+import { TriviasAnswerType } from '../enums/triviasAnswerType.enum';
 
 @Entity()
 @ObjectType()
-export class Answer {
+export class TriviasAnswer {
   @Field(() => Int)
   @PrimaryGeneratedColumn()
   id: number;
@@ -34,9 +34,9 @@ export class Answer {
   @Column()
   isTrue: boolean;
 
-  @Field(() => AnswerType)
+  @Field(() => TriviasAnswerType)
   @Column()
-  type: AnswerType;
+  type: TriviasAnswerType;
 
   @Field(() => Int)
   @Column()

@@ -1,10 +1,10 @@
 import { registerEnumType } from '@nestjs/graphql';
 
-export enum AnswerType {
+export enum TriviasAnswerType {
   ANSWER = 'ANSWER',
   JUSTIFICATION = 'JUSTIFICATION',
 }
 
-registerEnumType(AnswerType, {
-  name: 'AnswerType',
+registerEnumType(TriviasAnswerType, {
+  name: 'TriviasAnswerType',
 });

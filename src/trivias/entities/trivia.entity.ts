@@ -1,5 +1,6 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Subject } from 'src/subjects/entities/subject.entity';
+import { TriviasAnswer } from 'src/trivias-answers/entities/trivias-answer.entity';
 import {
   Column,
   CreateDateColumn,
@@ -10,7 +11,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Answer } from '../answers/entities/answer.entity';
 import { ExamList } from '../enums/examList.enum';
 import { TriviaType } from '../enums/triviaType.enum';
 
@@ -49,6 +49,10 @@ export class Trivia {
   @Column()
   exam: ExamList;
 
+  @Field(() => Int)
+  @Column()
+  subject_id: number;
+
   @Field(() => Subject)
   @ManyToOne(() => Subject, {
     eager: true,
@@ -58,7 +62,7 @@ export class Trivia {
   @JoinColumn({ name: 'subject_id', referencedColumnName: 'id' })
   subject: Subject;
 
-  @Field(() => [Answer])
-  @OneToMany(() => Answer, (answer) => answer.trivia)
-  answers: Answer[];
+  @Field(() => [TriviasAnswer])
+  @OneToMany(() => TriviasAnswer, (triviasAnswer) => triviasAnswer.trivia)
+  answers: TriviasAnswer[];
 }
