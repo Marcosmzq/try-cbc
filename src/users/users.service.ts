@@ -28,6 +28,12 @@ export class UsersService {
 
   async create(createUserInput: CreateUserInput) {
     const { email, username, password, confirmPassword } = createUserInput;
+    const checkIfEmailIsAvailable = await this.userRepository.findOne({
+      email,
+    });
+    if (checkIfEmailIsAvailable)
+      throw new UserInputError('The email is not available');
+
     if (password !== confirmPassword)
       throw new UserInputError("Password don't match");
     const user = this.userRepository.create({
