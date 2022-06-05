@@ -146,8 +146,9 @@ export class UsersService {
         to: user.email,
         html: `<div>
         <p>Hemos recibido una petición para restablecer la contraseña del usuario ${user.username}</p>
-        <p>Si vos fuiste quien realizó esta peticion entra al siguiente link, sino ignora este mensaje.</p>
+        <p>Si vos fuiste quien realizó esta petición entra al siguiente link, sino ignora este mensaje.</p>
         <p>El link será valido por 20 minutos, luego de eso deberás pedir otro.</p>
+        <p>No compartas este link con nadie.</p>
         <h5>${process.env.CLIENT_URL}/recovery-password/${token}</h5> 
       </div>`,
         subject: 'tryCBC Restablecer contraseña',
