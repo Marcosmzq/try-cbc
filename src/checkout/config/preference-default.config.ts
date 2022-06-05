@@ -8,7 +8,7 @@ export const preferenceDefaultConfig = (userID: number) => {
         title: 'Comprar cuenta PREMIUN de tryCBC',
         category_id: 'learnings',
         currency_id: 'ARS',
-        unit_price: 350,
+        unit_price: 500,
         quantity: 1,
         description:
           'Potencia tu cuenta de tryCBC y desbloquea beneficios, ejercicios y materias exlusivas. ¡Mejora tu cuenta y lleva tu aprendizaje a otro nivel!',
