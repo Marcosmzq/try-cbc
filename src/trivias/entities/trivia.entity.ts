@@ -1,5 +1,5 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { Subject } from 'src/subjects/entities/subject.entity';
+import { Course } from 'src/courses/entities/course.entity';
 import { TriviasAnswer } from 'src/trivias-answers/entities/trivias-answer.entity';
 import {
   Column,
@@ -51,16 +51,16 @@ export class Trivia {
 
   @Field(() => Int)
   @Column()
-  subject_id: number;
+  course_id: number;
 
-  @Field(() => Subject)
-  @ManyToOne(() => Subject, {
+  @Field(() => Course)
+  @ManyToOne(() => Course, {
     eager: true,
     cascade: true,
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'subject_id', referencedColumnName: 'id' })
-  subject: Subject;
+  @JoinColumn({ name: 'course_id', referencedColumnName: 'id' })
+  course: Course;
 
   @Field(() => [TriviasAnswer])
   @OneToMany(() => TriviasAnswer, (triviasAnswer) => triviasAnswer.trivia)

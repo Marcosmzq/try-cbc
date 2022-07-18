@@ -8,7 +8,7 @@ export class CreateTriviaInput {
   @IsInt()
   @IsNotEmpty()
   @Field(() => Int)
-  subject_id: number;
+  course_id: number;
 
   @Field(() => TriviaType)
   @IsNotEmpty()

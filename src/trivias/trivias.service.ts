@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Subject } from 'src/subjects/entities/subject.entity';
+import { UserInputError } from 'apollo-server-errors';
+import { Course } from 'src/courses/entities/course.entity';
 import { Repository } from 'typeorm';
 import { CreateTriviaInput } from './dto/create-trivia.input';
 import { UpdateTriviaInput } from './dto/update-trivia.input';
@@ -12,22 +13,23 @@ export class TriviasService {
   constructor(
     @InjectRepository(Trivia)
     private readonly triviaRepository: Repository<Trivia>,
-    @InjectRepository(Subject)
-    private readonly subjectRepository: Repository<Subject>,
-  ) {}
+    @InjectRepository(Course)
+    private readonly courseRepository: Repository<Course>,
+  ) { }
 
   async create(createTriviaInput: CreateTriviaInput) {
-    const { statement, exam, subject_id, feedback, type, source } =
+    const { statement, exam, course_id, feedback, type, source } =
       createTriviaInput;
-    const subject = await this.subjectRepository.findOne(subject_id);
+    const course = await this.courseRepository.findOne(course_id);
+    if (!course) throw new UserInputError("The course not exist, try with other course_id.")
     const trivia = this.triviaRepository.create({
       statement,
       exam,
-      feedback,
-      subject,
+      feedback, 
+      course,
       type,
       source,
-      subject_id,
+      course_id,
     });
     return this.triviaRepository.save(trivia);
   }
@@ -40,29 +42,31 @@ export class TriviasService {
     return this.triviaRepository.findOne(id, { relations: ['answers'] });
   }
 
-  async randomTrivia(subject_id: number, exam: string, type: TriviaType) {
-    const subject = await this.subjectRepository.findOne(subject_id);
+  async randomTrivia(course_id: number, exam: string, type: TriviaType) {
+    const course = await this.courseRepository.findOne(course_id);
     return this.triviaRepository
       .createQueryBuilder('trivia')
       .leftJoinAndSelect('trivia.answers', 'answers')
-      .leftJoinAndSelect('trivia.subject', 'subject')
+      .leftJoinAndSelect('trivia.course', 'course')
       .orderBy('RANDOM()')
-      .where({ subject, type, ...(exam && { exam }) })
+      .where({ course, type, ...(exam && { exam }) })
       .getOne();
   }
 
   async update(id: number, updateTriviaInput: UpdateTriviaInput) {
-    const { statement, exam, subject_id, feedback, type, source } =
+    const { statement, exam, course_id, feedback, type, source } =
       updateTriviaInput;
     const trivia = await this.triviaRepository.findOne(id);
+    if(!trivia) throw new UserInputError('The trivia not exist.')
     if (type) trivia.type = type;
     if (exam) trivia.exam = exam;
     if (statement) trivia.statement = statement;
     if (feedback) trivia.feedback = feedback;
     if (source) trivia.source = source;
-    if (subject_id) {
-      const newSubject = await this.subjectRepository.findOne(subject_id);
-      trivia.subject = newSubject;
+    if (course_id) {
+      const newCourse = await this.courseRepository.findOne(course_id);
+      trivia.course = newCourse
+      trivia.course_id = newCourse.id
     }
 
     return this.triviaRepository.save(trivia);
