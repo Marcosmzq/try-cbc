@@ -2,8 +2,8 @@ import { InputType, Field } from '@nestjs/graphql';
 import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
 
 @InputType()
-export class CreateSubjectInput {
-  @IsString()
+export class CreateCourseInput {
+ @IsString()
   @IsNotEmpty()
   @Field(() => String)
   name: string;

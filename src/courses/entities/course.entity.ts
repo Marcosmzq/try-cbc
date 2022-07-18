@@ -1,17 +1,10 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Trivia } from 'src/trivias/entities/trivia.entity';
-import {
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-  Column,
-  OneToMany,
-  Entity,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Column, OneToMany } from 'typeorm'
 
 @Entity()
 @ObjectType()
-export class Subject {
+export class Course {
   @Field(() => Int)
   @PrimaryGeneratedColumn()
   id: number;
@@ -32,7 +25,7 @@ export class Subject {
   @Column()
   isPremium: boolean;
 
-  @Field(() => [Trivia])
-  @OneToMany(() => Trivia, (trivia) => trivia.subject)
+@Field(() => [Trivia])
+  @OneToMany(() => Trivia, (trivia) => trivia.course)
   trivias: Trivia[];
 }
