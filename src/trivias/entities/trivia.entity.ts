@@ -12,7 +12,6 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { ExamList } from '../enums/examList.enum';
-import { TriviaType } from '../enums/triviaType.enum';
 
 @Entity()
 @ObjectType()
@@ -21,9 +20,13 @@ export class Trivia {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Field(() => TriviaType)
-  @Column({ default: TriviaType.TRIVIA })
-  type: TriviaType;
+  @Field(() => Boolean)
+  @Column()
+  isTrivia: boolean;
+
+  @Field(() => Boolean)
+  @Column()
+  isFlashcard: boolean;
 
   @Field(() => String)
   @CreateDateColumn()

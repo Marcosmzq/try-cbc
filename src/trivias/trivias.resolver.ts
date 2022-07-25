@@ -8,7 +8,6 @@ import { Roles } from 'src/docorators/roles.decorator';
 import { UserRole } from 'src/users/enums/userRole.enum';
 import { UseGuards, ValidationPipe } from '@nestjs/common';
 import { PremiumTriviasGuard } from './guards/premium-trivias.guard';
-import { TriviaType } from './enums/triviaType.enum';
 
 @Resolver(() => Trivia)
 export class TriviasResolver {
@@ -39,10 +38,10 @@ export class TriviasResolver {
   @UseGuards(PremiumTriviasGuard)
   getRandomTrivia(
     @Args('subject_id', { type: () => Int }) subject_id: number,
-    @Args('type', { type: () => TriviaType }) type: TriviaType,
+    @Args('isTrivia', {type: () => Boolean}) isTrivia: boolean,
     @Args('exam', { type: () => ExamList, nullable: true }) exam: ExamList,
   ) {
-    return this.triviasService.randomTrivia(subject_id, exam, type);
+    return this.triviasService.getRandomTrivia(subject_id, exam, isTrivia);
   }
 
   @Mutation(() => Trivia, { name: 'updateTrivia' })
