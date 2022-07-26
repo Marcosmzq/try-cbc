@@ -7,6 +7,7 @@ import { AuthResolver } from './auth.resolver';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { ConfigModule } from '@nestjs/config';
+import { NodemailerModule } from 'src/nodemailer/nodemailer.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { ConfigModule } from '@nestjs/config';
       signOptions: { expiresIn: '12h' },
       secret: process.env.JWT_SECRET,
     }),
+    NodemailerModule,
   ],
   providers: [AuthService, AuthResolver, LocalStrategy, JwtStrategy],
 })
