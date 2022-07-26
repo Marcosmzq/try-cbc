@@ -6,7 +6,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { TriviasModule } from './trivias/trivias.module';
-import { NodemailerService } from './nodemailer/nodemailer.service';
 import { CheckoutModule } from './checkout/checkout.module';
 import { RolesGuard } from './users/guards/roles.guard';
 import { TerminusModule } from '@nestjs/terminus';
@@ -14,6 +13,7 @@ import { HealthCheckController } from './health-check/health-check.controller';
 import { TriviasAnswersModule } from './trivias-answers/trivias-answers.module';
 import { CoursesModule } from './courses/courses.module';
 import { AuthModule } from './auth/auth.module';
+import { NodemailerModule } from './nodemailer/nodemailer.module';
 import * as ormConfig from './ormconfig';
 @Module({
   imports: [
@@ -35,11 +35,11 @@ import * as ormConfig from './ormconfig';
     TriviasAnswersModule,
     CoursesModule,
     AuthModule,
+    NodemailerModule,
   ],
   controllers: [AppController, HealthCheckController],
   providers: [
     AppService,
-    NodemailerService,
     {
       provide: 'APP_GUARD',
       useClass: RolesGuard,
