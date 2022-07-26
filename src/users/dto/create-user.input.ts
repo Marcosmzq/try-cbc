@@ -17,9 +17,4 @@ export class CreateUserInput {
   @IsString()
   @IsNotEmpty()
   password: string;
-
-  @Field(() => String)
-  @IsNotEmpty()
-  @IsString()
-  confirmPassword: string;
 }
