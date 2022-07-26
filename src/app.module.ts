@@ -6,8 +6,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { TriviasModule } from './trivias/trivias.module';
-import { JwtService } from './jwt/jwt.service';
-import { BcryptService } from './bcrypt/bcrypt.service';
 import { NodemailerService } from './nodemailer/nodemailer.service';
 import { CheckoutModule } from './checkout/checkout.module';
 import { RolesGuard } from './users/guards/roles.guard';
@@ -15,6 +13,7 @@ import { TerminusModule } from '@nestjs/terminus';
 import { HealthCheckController } from './health-check/health-check.controller';
 import { TriviasAnswersModule } from './trivias-answers/trivias-answers.module';
 import { CoursesModule } from './courses/courses.module';
+import { AuthModule } from './auth/auth.module';
 import * as ormConfig from './ormconfig';
 @Module({
   imports: [
@@ -35,12 +34,11 @@ import * as ormConfig from './ormconfig';
     CheckoutModule,
     TriviasAnswersModule,
     CoursesModule,
+    AuthModule,
   ],
   controllers: [AppController, HealthCheckController],
   providers: [
     AppService,
-    JwtService,
-    BcryptService,
     NodemailerService,
     {
       provide: 'APP_GUARD',
