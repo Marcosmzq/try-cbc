@@ -1,32 +1,30 @@
-import { Dependencies, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateConceptInput } from './dto/create-concept.input';
 import { UpdateConceptInput } from './dto/update-concept.input';
 import { Concept } from './entities/concept.entity';
 import { UsersService } from '../users/users.service';
 import { UserInputError } from 'apollo-server-express';
-import { CoursesService } from 'src/courses/courses.service';
+import { CoursesService } from '../courses/courses.service';
 
 @Injectable()
-@Dependencies(UsersService, CoursesService)
 export class ConceptsService {
   constructor(
     @InjectRepository(Concept)
     private readonly conceptRepository: Repository<Concept>,
-    private readonly userService: UsersService,
-    private readonly courseService: CoursesService,
+    private readonly usersService: UsersService,
+    private readonly coursesService: CoursesService,
   ) {}
 
   async create(createConceptInput: CreateConceptInput) {
     const { author_id, course_id, title, description } = createConceptInput;
-    const user = await this.userService.findOne(author_id);
+    const user = await this.usersService.findOne(author_id);
     if (!user)
       throw new UserInputError(
         'The author id passed not belongs to any user. Try with other.',
       );
-    const course = await this.courseService.findOne(course_id);
+    const course = await this.coursesService.findOne(course_id);
     if (!course)
       throw new UserInputError(
         'The course id passed is not valid. Try with other.',
@@ -60,7 +58,7 @@ export class ConceptsService {
     const { author_id, course_id, description, title } = updateConceptInput;
     const concept = await this.conceptRepository.findOne(concept_id);
     if (author_id) {
-      const updatedAuthor = await this.userService.findOne(author_id);
+      const updatedAuthor = await this.usersService.findOne(author_id);
       if (!updatedAuthor)
         throw new UserInputError(
           'The author id passed not belongs to any user. Try with other.',
@@ -68,7 +66,7 @@ export class ConceptsService {
       concept.author = updatedAuthor;
     }
     if (course_id) {
-      const updatedCourse = await this.courseService.findOne(course_id);
+      const updatedCourse = await this.coursesService.findOne(course_id);
       if (!updatedCourse)
         throw new UserInputError(
           'The course id passed not belongs to any course. Try with other.',
