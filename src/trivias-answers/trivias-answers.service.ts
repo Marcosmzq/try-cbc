@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UserInputError } from 'apollo-server-express';
 import { Trivia } from 'src/trivias/entities/trivia.entity';
 import { Repository } from 'typeorm';
 import { CreateTriviasAnswerInput } from './dto/create-trivias-answer.input';
@@ -16,12 +17,15 @@ export class TriviasAnswersService {
   ) {}
 
   async create(createTriviasAnswerInput: CreateTriviasAnswerInput) {
-    const { statement, isTrue, type, trivia_id } = createTriviasAnswerInput;
+    const { statement, isTrue, trivia_id } = createTriviasAnswerInput;
     const trivia = await this.triviaRepository.findOne(trivia_id);
+    if (!trivia)
+      throw new UserInputError(
+        'The trivia id entered not belongs to any trivia.',
+      );
     const answer = this.triviasAnswerRepository.create({
       statement,
       isTrue,
-      type,
       trivia,
     });
 
@@ -37,11 +41,13 @@ export class TriviasAnswersService {
   }
 
   async update(id: number, updateTriviasAnswerInput: UpdateTriviasAnswerInput) {
-    const { statement, type, isTrue } = updateTriviasAnswerInput;
+    const { statement, isTrue } = updateTriviasAnswerInput;
     const answer = await this.triviasAnswerRepository.findOne(id);
-
+    if (!answer)
+      throw new UserInputError(
+        'The trivia answer id entered not belongs to any answer.',
+      );
     if (statement) answer.statement = statement;
-    if (type) answer.type = type;
     if (isTrue !== undefined) answer.isTrue = isTrue;
     return this.triviasAnswerRepository.save(answer);
   }

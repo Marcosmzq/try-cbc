@@ -9,7 +9,6 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { TriviasAnswerType } from '../enums/triviasAnswerType.enum';
 
 @Entity()
 @ObjectType()
@@ -33,10 +32,6 @@ export class TriviasAnswer {
   @Field(() => Boolean)
   @Column()
   isTrue: boolean;
-
-  @Field(() => TriviasAnswerType)
-  @Column()
-  type: TriviasAnswerType;
 
   @Field(() => Int)
   @Column()
