@@ -5,6 +5,10 @@ import { ConfigModule } from '@nestjs/config';
 import { TriviasAnswer } from './trivias-answers/entities/trivias-answer.entity';
 import { Course } from './courses/entities/course.entity';
 import { Concept } from './concepts/entities/concept.entity';
+import { Note } from './notes/entities/note.entity';
+import { Quote } from './quotes/entities/quote.entity';
+import { Timeline } from './timelines/entities/timeline.entity';
+import { TimelineEvent } from './timeline-events/entities/timeline-event.entity';
 ConfigModule.forRoot();
 
 const ormConfigProd: ConnectionOptions = {
@@ -27,13 +31,33 @@ const ormConfigProd: ConnectionOptions = {
       rejectUnauthorized: false,
     },
   },
-  entities: [User, Trivia, TriviasAnswer, Course, Concept],
+  entities: [
+    User,
+    Trivia,
+    TriviasAnswer,
+    Course,
+    Concept,
+    Note,
+    Quote,
+    Timeline,
+    TimelineEvent,
+  ],
 };
 
 const ormConfigDev: ConnectionOptions = {
   type: 'sqlite',
   database: 'db',
-  entities: [User, Trivia, TriviasAnswer, Course, Concept],
+  entities: [
+    User,
+    Trivia,
+    TriviasAnswer,
+    Course,
+    Concept,
+    Note,
+    Quote,
+    Timeline,
+    TimelineEvent,
+  ],
   dropSchema: true,
   synchronize: true,
   logging: true,
