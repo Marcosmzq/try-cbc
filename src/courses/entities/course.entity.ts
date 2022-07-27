@@ -9,6 +9,8 @@ import {
   Column,
   OneToMany,
 } from 'typeorm';
+import { Note } from 'src/notes/entities/note.entity';
+import { Quote } from 'src/quotes/entities/quote.entity';
 
 @Entity()
 @ObjectType()
@@ -40,4 +42,12 @@ export class Course {
   @Field(() => [Concept])
   @OneToMany(() => Concept, (concept) => concept.course)
   concepts: Concept[];
+
+  @Field(() => [Quote])
+  @OneToMany(() => Quote, (quote) => quote.user)
+  quotes: Quote[];
+
+  @Field(() => [Note])
+  @OneToMany(() => Note, (note) => note.author)
+  notes: Note[];
 }

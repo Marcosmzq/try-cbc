@@ -16,6 +16,8 @@ import { AuthModule } from './auth/auth.module';
 import { NodemailerModule } from './nodemailer/nodemailer.module';
 import * as ormConfig from './ormconfig';
 import { ConceptsModule } from './concepts/concepts.module';
+import { QuotesModule } from './quotes/quotes.module';
+import { NotesModule } from './notes/notes.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -38,6 +40,8 @@ import { ConceptsModule } from './concepts/concepts.module';
     AuthModule,
     NodemailerModule,
     ConceptsModule,
+    QuotesModule,
+    NotesModule,
   ],
   controllers: [AppController, HealthCheckController],
   providers: [
