@@ -2,11 +2,11 @@ import { InputType, Field } from '@nestjs/graphql';
 import { IsString, IsNotEmpty } from 'class-validator';
 
 @InputType()
-export class RecoveryPasswordInput {
+export class RecoveryPasswordWithTokenInput {
   @Field(() => String)
   @IsString()
   @IsNotEmpty()
-  userToken: string;
+  access_token: string;
 
   @Field(() => String)
   @IsNotEmpty()
