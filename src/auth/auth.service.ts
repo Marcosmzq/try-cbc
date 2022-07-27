@@ -110,7 +110,6 @@ export class AuthService {
 
     //Identify the user from the token
     const decodeToken = await this.jwtService.decode(access_token);
-    console.log(decodeToken);
 
     //Check if the user exists
     //@ts-ignore
