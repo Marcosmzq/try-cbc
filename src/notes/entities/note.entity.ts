@@ -7,8 +7,10 @@ import {
   UpdateDateColumn,
   Column,
   ManyToOne,
+  Entity,
 } from 'typeorm';
 
+@Entity()
 @ObjectType()
 export class Note {
   @Field(() => Int)

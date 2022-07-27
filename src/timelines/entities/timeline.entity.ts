@@ -9,8 +9,10 @@ import {
   Column,
   ManyToOne,
   OneToMany,
+  Entity,
 } from 'typeorm';
 
+@Entity()
 @ObjectType()
 export class Timeline {
   @Field(() => Int)

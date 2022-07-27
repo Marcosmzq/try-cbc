@@ -6,8 +6,10 @@ import {
   UpdateDateColumn,
   Column,
   ManyToOne,
+  Entity,
 } from 'typeorm';
 
+@Entity()
 @ObjectType()
 export class TimelineEvent {
   @Field(() => Int)
