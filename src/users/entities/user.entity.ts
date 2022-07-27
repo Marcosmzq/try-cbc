@@ -37,7 +37,7 @@ export class User {
   password: string;
 
   @Field(() => UserRole)
-  @Column()
+  @Column({ default: UserRole.FREE_USER })
   role: UserRole;
 
   @Field(() => [Concept])

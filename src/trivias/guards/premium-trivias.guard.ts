@@ -7,7 +7,6 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserInputError } from 'apollo-server-express';
 import { Course } from 'src/courses/entities/course.entity';
-import { JwtService } from 'src/jwt/jwt.service';
 import { UserRole } from 'src/users/enums/userRole.enum';
 import { Repository } from 'typeorm';
 
@@ -16,10 +15,10 @@ export class PremiumTriviasGuard implements CanActivate {
   constructor(
     @InjectRepository(Course)
     private readonly courseRepository: Repository<Course>,
-    private jwtService: JwtService,
-  ) { }
+  ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const args = context.getArgByIndex(1);
+    return true;
+    /*  const args = context.getArgByIndex(1);
     const req = context.getArgByIndex(2).req;
 
     const course = await this.courseRepository.findOne({
@@ -43,6 +42,6 @@ export class PremiumTriviasGuard implements CanActivate {
           message: `Debes iniciar sesion y ser usuario premiun para acceder a este contenido. Visita ${process.env.CLIENT_URL}/premium para más información.`,
         });
       }
-    }
+    } */
   }
 }
