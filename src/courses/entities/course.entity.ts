@@ -1,6 +1,14 @@
 import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { Trivia } from 'src/trivias/entities/trivia.entity';
-import { Entity, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Column, OneToMany } from 'typeorm'
+import { Concept } from '../../concepts/entities/concept.entity';
+import { Trivia } from '../../trivias/entities/trivia.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  Column,
+  OneToMany,
+} from 'typeorm';
 
 @Entity()
 @ObjectType()
@@ -25,7 +33,11 @@ export class Course {
   @Column()
   isPremium: boolean;
 
-@Field(() => [Trivia])
+  @Field(() => [Trivia])
   @OneToMany(() => Trivia, (trivia) => trivia.course)
   trivias: Trivia[];
+
+  @Field(() => [Concept])
+  @OneToMany(() => Concept, (concept) => concept.course)
+  concepts: Concept[];
 }

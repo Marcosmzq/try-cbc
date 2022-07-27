@@ -15,6 +15,7 @@ import { CoursesModule } from './courses/courses.module';
 import { AuthModule } from './auth/auth.module';
 import { NodemailerModule } from './nodemailer/nodemailer.module';
 import * as ormConfig from './ormconfig';
+import { ConceptsModule } from './concepts/concepts.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -36,6 +37,7 @@ import * as ormConfig from './ormconfig';
     CoursesModule,
     AuthModule,
     NodemailerModule,
+    ConceptsModule,
   ],
   controllers: [AppController, HealthCheckController],
   providers: [

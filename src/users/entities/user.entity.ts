@@ -4,9 +4,11 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { UserRole } from '../enums/userRole.enum';
+import { Concept } from 'src/concepts/entities/concept.entity';
 
 @Entity()
 @ObjectType()
@@ -37,4 +39,8 @@ export class User {
   @Field(() => UserRole)
   @Column({ default: UserRole.FREE_USER })
   role: UserRole;
+
+  @Field(() => [Concept])
+  @OneToMany(() => Concept, (concept) => concept.author)
+  concepts: Concept[];
 }
