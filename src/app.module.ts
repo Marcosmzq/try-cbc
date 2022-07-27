@@ -16,6 +16,7 @@ import { HealthCheckController } from './health-check/health-check.controller';
 import { TriviasAnswersModule } from './trivias-answers/trivias-answers.module';
 import { CoursesModule } from './courses/courses.module';
 import * as ormConfig from './ormconfig';
+import { ConceptsModule } from './concepts/concepts.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -35,6 +36,7 @@ import * as ormConfig from './ormconfig';
     CheckoutModule,
     TriviasAnswersModule,
     CoursesModule,
+    ConceptsModule,
   ],
   controllers: [AppController, HealthCheckController],
   providers: [

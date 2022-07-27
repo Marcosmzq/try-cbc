@@ -7,6 +7,7 @@ import { TriviasModule } from 'src/trivias/trivias.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Course]), TriviasModule],
-  providers: [CoursesResolver, CoursesService]
+  providers: [CoursesResolver, CoursesService],
+  exports: [CoursesService],
 })
 export class CoursesModule {}
