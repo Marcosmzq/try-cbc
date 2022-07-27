@@ -11,6 +11,7 @@ import { UserRole } from '../enums/userRole.enum';
 import { Concept } from 'src/concepts/entities/concept.entity';
 import { Quote } from 'src/quotes/entities/quote.entity';
 import { Note } from 'src/notes/entities/note.entity';
+import { Timeline } from 'src/timelines/entities/timeline.entity';
 
 @Entity()
 @ObjectType()
@@ -53,4 +54,8 @@ export class User {
   @Field(() => [Note])
   @OneToMany(() => Note, (note) => note.author)
   notes: Note[];
+
+  @Field(() => [Timeline])
+  @OneToMany(() => Timeline, (timeline) => timeline.user)
+  timelines: Timeline[];
 }

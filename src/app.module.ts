@@ -18,6 +18,8 @@ import * as ormConfig from './ormconfig';
 import { ConceptsModule } from './concepts/concepts.module';
 import { QuotesModule } from './quotes/quotes.module';
 import { NotesModule } from './notes/notes.module';
+import { TimelinesModule } from './timelines/timelines.module';
+import { TimelineEventsModule } from './timeline-events/timeline-events.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -42,6 +44,8 @@ import { NotesModule } from './notes/notes.module';
     ConceptsModule,
     QuotesModule,
     NotesModule,
+    TimelinesModule,
+    TimelineEventsModule,
   ],
   controllers: [AppController, HealthCheckController],
   providers: [
