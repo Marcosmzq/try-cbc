@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthenticationError, UserInputError } from 'apollo-server-express';
 import { Repository } from 'typeorm';
@@ -18,13 +22,27 @@ export class UsersService {
 
   async create(createUserInput: CreateUserInput) {
     const newUser = this.userRepository.create(createUserInput);
+
     return this.userRepository.save(newUser);
   }
 
-  findAll() {
+  async userIsAdmin(user_id: number) {
+    const user = await this.userRepository.findOne(user_id);
+    if (!user) throw new BadRequestException('User id provided is wrong');
+    const { password, ...result } = user;
+
+    return {
+      isAdmin: user.role === UserRole.ADMIN,
+      user: result,
+    };
+  }
+
+  async findAll() {
     return this.userRepository.find();
   }
 
+  //TODO: Este metodo solo puede ser accedido si el usuario es admin
+  //TODO: Crear otro metodo, getCurrentUser, que busca el usuario del contexto.
   findOne(id: number) {
     return this.userRepository.findOne(id);
   }
@@ -33,8 +51,10 @@ export class UsersService {
     return this.userRepository.findOne({ email });
   }
 
-  remove(id: number) {
-    this.userRepository.delete(id);
+  async remove(userIdToDelete: number, userIdFromCtx: number) {
+    const { isAdmin } = await this.userIsAdmin(userIdFromCtx);
+    if (!isAdmin) throw new UnauthorizedException('ADMIN role is required');
+    this.userRepository.delete(userIdToDelete);
     return true;
   }
 
