@@ -8,6 +8,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { ConfigModule } from '@nestjs/config';
 import { NodemailerModule } from 'src/nodemailer/nodemailer.module';
+import { AdminRoleStrategy } from './strategies/admin-role.strategy';
 
 @Module({
   imports: [
@@ -20,6 +21,12 @@ import { NodemailerModule } from 'src/nodemailer/nodemailer.module';
     }),
     NodemailerModule,
   ],
-  providers: [AuthService, AuthResolver, LocalStrategy, JwtStrategy],
+  providers: [
+    AuthService,
+    AuthResolver,
+    LocalStrategy,
+    JwtStrategy,
+    AdminRoleStrategy,
+  ],
 })
 export class AuthModule {}

@@ -1,4 +1,9 @@
-import { Dependencies, Injectable, BadRequestException } from '@nestjs/common';
+import {
+  Dependencies,
+  Injectable,
+  BadRequestException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UserInputError } from 'apollo-server-express';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
@@ -9,7 +14,6 @@ import { NodemailerService } from 'src/nodemailer/nodemailer.service';
 import { AccessTokenPayload } from './dto/access-token-payload';
 import { ChangePasswordInput } from './dto/change-password.input';
 import { RecoveryPasswordWithTokenInput } from './dto/recovery-password-with-token.input';
-
 @Injectable()
 @Dependencies(UsersService, JwtService, NodemailerService)
 export class AuthService {
