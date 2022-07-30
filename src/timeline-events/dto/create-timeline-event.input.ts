@@ -3,11 +3,6 @@ import { IsInt, IsNotEmpty, IsString } from 'class-validator';
 
 @InputType()
 export class CreateTimelineEventInput {
-  @IsInt()
-  @IsNotEmpty()
-  @Field(() => Int)
-  timeline_id: number;
-
   @IsString()
   @IsNotEmpty()
   @Field(() => String)
