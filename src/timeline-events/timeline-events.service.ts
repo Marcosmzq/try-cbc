@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserInputError } from 'apollo-server-express';
-import { TimelinesService } from 'src/timelines/timelines.service';
+import { Timeline } from 'src/timelines/entities/timeline.entity';
 import { Repository } from 'typeorm';
 import { CreateTimelineEventInput } from './dto/create-timeline-event.input';
 import { UpdateTimelineEventInput } from './dto/update-timeline-event.input';
@@ -12,24 +11,20 @@ export class TimelineEventsService {
   constructor(
     @InjectRepository(TimelineEvent)
     private readonly timelineEventRepository: Repository<TimelineEvent>,
-    private readonly timelinesService: TimelinesService,
   ) {}
 
-  async create(createTimelineEventInput: CreateTimelineEventInput) {
-    const { eventContent, eventDate, eventTitle, timeline_id } =
-      createTimelineEventInput;
-    const timeline = await this.timelinesService.findOne(timeline_id);
-    if (!timeline)
-      throw new UserInputError(
-        'The timeline id passed not belongs to any timeline. Try with other.',
-      );
-    const newTimelineEvent = this.timelineEventRepository.create({
+  async create(
+    timeline: Timeline,
+    createTimelineEventInput: CreateTimelineEventInput,
+  ) {
+    const { eventContent, eventDate, eventTitle } = createTimelineEventInput;
+    const newEvent = this.timelineEventRepository.create({
       eventContent,
       eventDate,
       eventTitle,
       timeline,
     });
-    return this.timelineEventRepository.save(newTimelineEvent);
+    return this.timelineEventRepository.save(newEvent);
   }
 
   findAll() {
@@ -40,31 +35,26 @@ export class TimelineEventsService {
     return this.timelineEventRepository.findOne(id);
   }
 
-  findByTimeline(timeline_id) {
-    return this.timelineEventRepository.find({ timeline: { id: timeline_id } });
+  findRandomEventBTimeline(timeline: Timeline) {
+    return this.timelineEventRepository
+      .createQueryBuilder('event')
+      .leftJoinAndSelect('event.timeline', 'timeline')
+      .orderBy('RANDOM()')
+      .where({
+        timeline,
+      })
+      .getOne();
+  }
+
+  findByTimeline(timeline: Timeline) {
+    return this.timelineEventRepository.find({ timeline });
   }
 
   async update(
-    timelineEvent_id: number,
+    timelineEvent: TimelineEvent,
     updateTimelineEventInput: UpdateTimelineEventInput,
   ) {
-    const { eventContent, eventDate, eventTitle, timeline_id } =
-      updateTimelineEventInput;
-    const timelineEvent = await this.timelineEventRepository.findOne(
-      timelineEvent_id,
-    );
-    if (!timelineEvent)
-      throw new UserInputError(
-        'The timeline event id passed not belongs to any event. Try with other.',
-      );
-    if (timeline_id) {
-      const updatedTimeline = await this.timelinesService.findOne(timeline_id);
-      if (!updatedTimeline)
-        throw new UserInputError(
-          'The timeline id passed not belongs to any timeline. Try with other.',
-        );
-      timelineEvent.timeline = updatedTimeline;
-    }
+    const { eventContent, eventDate, eventTitle } = updateTimelineEventInput;
     if (eventTitle) timelineEvent.eventTitle = eventTitle;
     if (eventContent) timelineEvent.eventContent = eventContent;
     if (eventDate) timelineEvent.eventDate = eventDate;
