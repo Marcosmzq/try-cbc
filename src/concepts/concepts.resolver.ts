@@ -11,6 +11,7 @@ import { User } from 'src/users/entities/user.entity';
 import { AdminAuthGuard } from 'src/auth/guards/admin-role.guard';
 import { CourseByIdPipe } from 'src/courses/pipes/course-by-id.pipe';
 import { Course } from 'src/courses/entities/course.entity';
+import { ConceptByIdPipe } from './pipes/concept-by-id.pipe';
 
 @Resolver(() => Concept)
 export class ConceptsResolver {
@@ -30,26 +31,26 @@ export class ConceptsResolver {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Query(() => Concept, { name: 'findCurrentUserConceptsByCourse' })
+  @Query(() => [Concept], { name: 'findCurrentUserConceptsByCourse' })
   findCurrentUserConceptsByCourse(
-    @Args('course_id', { type: () => Int }) course_id: number,
+    @Args('course_id', { type: () => Int }, CourseByIdPipe) course: Course,
     @CurrentUser() currentUser: User,
   ) {
     return this.conceptsService.findCurrentUserConceptsByCourse(
       currentUser,
-      course_id,
+      course,
     );
   }
 
   @UseGuards(JwtAuthGuard)
   @Query(() => Concept, { name: 'findCurrentUserRandomConceptByCourse' })
   findCurrentUserRandomConceptByCourse(
-    @Args('course_id', { type: () => Int }) course_id: number,
+    @Args('course_id', { type: () => Int }, CourseByIdPipe) course: Course,
     @CurrentUser() currentUser: User,
   ) {
     return this.conceptsService.findCurrentUserRandomConceptByCourse(
       currentUser,
-      course_id,
+      course,
     );
   }
 
@@ -88,16 +89,16 @@ export class ConceptsResolver {
   @UseGuards(JwtAuthGuard, ConceptsCrudOpsGuard)
   @Mutation(() => Concept, { name: 'updateConcept' })
   updateConcept(
-    @Args('trivia_id', { type: () => Int }) trivia_id: number,
+    @Args('concept_id', { type: () => Int }, ConceptByIdPipe) concept: Concept,
     @Args('updateConceptInput', new ValidationPipe())
     updateConceptInput: UpdateConceptInput,
   ) {
-    return this.conceptsService.update(trivia_id, updateConceptInput);
+    return this.conceptsService.update(concept, updateConceptInput);
   }
 
   @UseGuards(JwtAuthGuard, ConceptsCrudOpsGuard)
   @Mutation(() => Concept, { name: 'deleteConcept' })
-  removeConcept(@Args('trivia_id', { type: () => Int }) trivia_id: number) {
-    return this.conceptsService.remove(trivia_id);
+  removeConcept(@Args('concept_id', { type: () => Int }) concept_id: number) {
+    return this.conceptsService.remove(concept_id);
   }
 }
