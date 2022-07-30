@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   CanActivate,
   ExecutionContext,
   Injectable,
@@ -16,12 +15,12 @@ export class ConceptsCrudOpsGuard implements CanActivate {
   async canActivate(context: ExecutionContext) {
     const ctx = GqlExecutionContext.create(context);
     const request = ctx.getContext().req;
-    const trivia_id = ctx.getArgs().trivia_id;
+    const concept_id = ctx.getArgs().concept_id;
     const user_id = request.user.id;
 
-    const trivia = await this.conceptsService.findOne(trivia_id);
-    if (!trivia) throw new UserInputError('The trivia id provided is wrong.');
-    if (trivia.author.id !== user_id)
+    const concept = await this.conceptsService.findOne(concept_id);
+    if (!concept) throw new UserInputError('The concept id provided is wrong.');
+    if (concept.author.id !== user_id)
       throw new UnauthorizedException(
         'You are not allowed to operate with records of other user.',
       );
