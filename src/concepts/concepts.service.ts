@@ -49,23 +49,23 @@ export class ConceptsService {
     return this.conceptRepository.find({ course: { id: course_id } });
   }
 
-  findCurrentUserConceptsByCourse(currentUser: User, course_id: number) {
+  findCurrentUserConceptsByCourse(currentUser: User, course: Course) {
     return this.conceptRepository.find({
       where: {
-        course: { id: course_id },
+        course,
         author: currentUser,
       },
     });
   }
 
-  findCurrentUserRandomConceptByCourse(currentUser: User, course_id: number) {
+  findCurrentUserRandomConceptByCourse(currentUser: User, course: Course) {
     return this.conceptRepository
       .createQueryBuilder('concept')
-      .leftJoinAndSelect('concept.user', 'user')
+      .leftJoinAndSelect('concept.author', 'author')
       .leftJoinAndSelect('concept.course', 'course')
       .orderBy('RANDOM()')
       .where({
-        course: { id: course_id },
+        course,
         author: currentUser,
       })
       .getOne();
@@ -80,9 +80,8 @@ export class ConceptsService {
     });
   }
 
-  async update(concept_id: number, updateConceptInput: UpdateConceptInput) {
+  async update(concept: Concept, updateConceptInput: UpdateConceptInput) {
     const { description, title } = updateConceptInput;
-    const concept = await this.conceptRepository.findOne(concept_id);
     if (title) concept.title = title;
     if (description) concept.description = description;
     return this.conceptRepository.save(concept);
