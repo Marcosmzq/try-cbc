@@ -3,10 +3,9 @@ import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { UseGuards, ValidationPipe } from '@nestjs/common';
 import { ChangeRoleInput } from './dto/change-role.input';
-import { UserRole } from './enums/userRole.enum';
-import { Roles } from '../docorators/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { AdminAuthGuard } from 'src/auth/guards/admin-role.guard';
+import { CurrentUser } from './decorators/current-user.decorator';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -14,29 +13,30 @@ export class UsersResolver {
 
   @UseGuards(AdminAuthGuard)
   @Query(() => [User], { name: 'findAllUsers' })
-  @Roles(UserRole.ADMIN)
   findAll() {
     return this.usersService.findAll();
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AdminAuthGuard)
   @Query(() => User, { name: 'findUserByID' })
-  @Roles(UserRole.ADMIN, UserRole.FREE_USER, UserRole.PREMIUM_USER)
   findOne(@Args('id', { type: () => Int }) id: number) {
     return this.usersService.findOne(id);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Mutation(() => Boolean, { name: 'deleteUserByID' })
-  @Roles(UserRole.ADMIN)
-  removeUser(
-    @Args('userIdToDelete', { type: () => Int }) userIdToDelete: number,
-    @Context() context,
-  ) {
-    return this.usersService.remove(userIdToDelete, context.req.user.userId);
+  @Query(() => User, { name: 'findCurrentUser' })
+  findCurrentUser(@CurrentUser() currentUser: User) {
+    return currentUser;
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AdminAuthGuard)
+  @Mutation(() => Boolean, { name: 'deleteUserByID' })
+  removeUser(
+    @Args('userIdToDelete', { type: () => Int }) userIdToDelete: number,
+  ) {
+    return this.usersService.remove(userIdToDelete);
+  }
+
   @Mutation(() => User, { name: 'changeUserRole' })
   changeRole(
     @Args('changeRoleInput', new ValidationPipe())
