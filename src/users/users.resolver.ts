@@ -45,8 +45,9 @@ export class UsersResolver {
     return this.usersService.changeRole(changeRoleInput);
   }
 
-  @Mutation(() => Boolean, { name: 'upgradeUserAccount' })
-  upgradeAccount(@Args('userID') userID: number) {
-    return this.usersService.upgradeAccount(userID);
+  @UseGuards(JwtAuthGuard)
+  @Mutation(() => String, { name: 'upgradeCurrentUserAccount' })
+  upgradeAccount(@CurrentUser() currentUser: User) {
+    return this.usersService.upgradeAccount(currentUser);
   }
 }

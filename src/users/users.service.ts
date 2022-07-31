@@ -54,17 +54,22 @@ export class UsersService {
     return this.userRepository.save(user);
   }
 
-  async upgradeAccount(userID: number) {
-    const checkIfUserBuyPremium =
-      await this.checkoutService.checkIfUserHasApprovedPayments(userID);
-    const user = await this.userRepository.findOne(userID);
-    if (!checkIfUserBuyPremium || !user) {
-      return false;
+  async upgradeAccount(user: User) {
+    if (user.role === UserRole.PREMIUM_USER) {
+      return 'You are already a premium user, enjoy your membership.';
     }
-    if (checkIfUserBuyPremium) {
+    const checkIfUserBuyPremium =
+      await this.checkoutService.checkIfUserHasApprovedPayments(user.id);
+    if (!checkIfUserBuyPremium) {
+      return `We did not find approved payments associated with your account, try again later or if you think this is an error, send us an email. @${process.env.NODEMAILER_AUTH_USER} `;
+    }
+    if (
+      checkIfUserBuyPremium &&
+      user.role !== (UserRole.PREMIUM_USER || UserRole.ADMIN)
+    ) {
       user.role = UserRole.PREMIUM_USER;
       await this.userRepository.save(user);
-      return true;
+      return 'We update your role, congratulations you are a premium user now! Remember that you must log out and log in again to see the changes reflected.';
     }
   }
 }
