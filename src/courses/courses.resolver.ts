@@ -38,7 +38,7 @@ export class CoursesResolver {
   updateCourse(
     @Args('updateCourseInput', new ValidationPipe())
     updateCourseInput: UpdateCourseInput,
-    @Args('course_id', CourseByIdPipe) course: Course,
+    @Args('course_id', { type: () => Int }, CourseByIdPipe) course: Course,
   ) {
     return this.coursesService.update(course, updateCourseInput);
   }
