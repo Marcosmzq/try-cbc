@@ -4,5 +4,6 @@ import { CheckoutResolver } from './checkout.resolver';
 
 @Module({
   providers: [CheckoutResolver, CheckoutService],
+  exports: [CheckoutService],
 })
 export class CheckoutModule {}
