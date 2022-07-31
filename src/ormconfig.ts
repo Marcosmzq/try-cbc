@@ -60,7 +60,7 @@ const ormConfigDev: ConnectionOptions = {
   ],
   dropSchema: true,
   synchronize: true,
-  logging: true,
+  logging: false,
 };
 
 const ormConfig =
