@@ -33,12 +33,7 @@ export class TriviasAnswer {
   @Column()
   isTrue: boolean;
 
-  @Field(() => Int)
-  @Column()
-  trivia_id: number;
-
   @Field(() => Trivia)
   @ManyToOne(() => Trivia, { eager: true })
-  @JoinColumn({ name: 'trivia_id', referencedColumnName: 'id' })
   trivia: Trivia;
 }

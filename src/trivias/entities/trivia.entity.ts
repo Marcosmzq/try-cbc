@@ -20,6 +20,14 @@ export class Trivia {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Field(() => String)
+  @CreateDateColumn()
+  created_at: string;
+
+  @Field(() => String)
+  @UpdateDateColumn()
+  updated_at: string;
+
   @Field(() => Boolean)
   @Column()
   isTrivia: boolean;
@@ -29,20 +37,8 @@ export class Trivia {
   isFlashcard: boolean;
 
   @Field(() => String)
-  @CreateDateColumn()
-  created_at: string;
-
-  @Field(() => String)
-  @UpdateDateColumn()
-  updated_at: string;
-
-  @Field(() => String)
   @Column()
   statement: string;
-
-  @Field(() => String)
-  @Column({ nullable: true })
-  source: string;
 
   @Field(() => String, { nullable: true })
   @Column({ nullable: true })
@@ -52,17 +48,12 @@ export class Trivia {
   @Column()
   exam: ExamList;
 
-  @Field(() => Int)
-  @Column()
-  course_id: number;
-
   @Field(() => Course)
   @ManyToOne(() => Course, {
     eager: true,
     cascade: true,
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'course_id', referencedColumnName: 'id' })
   course: Course;
 
   @Field(() => [TriviasAnswer])
