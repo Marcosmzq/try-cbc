@@ -1,6 +1,6 @@
 import { Dependencies, UseGuards, ValidationPipe } from '@nestjs/common';
 import { Resolver, Mutation, Args, Context } from '@nestjs/graphql';
-import { IsEmail } from 'class-validator';
+import { CurrentUser } from 'src/users/decorators/current-user.decorator';
 import { User } from 'src/users/entities/user.entity';
 import { AuthService } from './auth.service';
 import { ChangePasswordInput } from './dto/change-password.input';
@@ -50,13 +50,10 @@ export class AuthResolver {
   @UseGuards(JwtAuthGuard)
   @Mutation(() => String, { name: 'changePassword' })
   changePassword(
+    @CurrentUser() currentUser: User,
     @Args('changePasswordInput', new ValidationPipe())
     changePasswordInput: ChangePasswordInput,
-    @Context() context,
   ) {
-    return this.authService.changePassword(
-      context.req.user,
-      changePasswordInput,
-    );
+    return this.authService.changePassword(currentUser, changePasswordInput);
   }
 }
