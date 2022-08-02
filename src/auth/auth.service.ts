@@ -9,6 +9,7 @@ import { NodemailerService } from 'src/nodemailer/nodemailer.service';
 import { AccessTokenPayload } from './dto/access-token-payload';
 import { ChangePasswordInput } from './dto/change-password.input';
 import { RecoveryPasswordWithTokenInput } from './dto/recovery-password-with-token.input';
+
 @Injectable()
 @Dependencies(UsersService, JwtService, NodemailerService)
 export class AuthService {
@@ -35,8 +36,8 @@ export class AuthService {
   }
 
   async login(user: User) {
-    const { username, email, id } = user;
-    const payload: AccessTokenPayload = { username, email, id };
+    const { username, email, id, role } = user;
+    const payload: AccessTokenPayload = { username, email, id, role };
     return {
       access_token: this.jwtService.sign(payload),
       user,
@@ -63,7 +64,12 @@ export class AuthService {
       password: await bcrypt.hash(password, 12),
     });
 
-    const payload: AccessTokenPayload = { username, email, id: user.id };
+    const payload: AccessTokenPayload = {
+      username,
+      email,
+      id: user.id,
+      role: user.role,
+    };
     return {
       access_token: this.jwtService.sign(payload),
       user,
@@ -79,6 +85,7 @@ export class AuthService {
       username: user.username,
       email: user.email,
       id: user.id,
+      role: user.role,
     };
     const recoveryToken = this.jwtService.sign(payload);
 

@@ -11,6 +11,10 @@ export class AccessTokenPayload {
   @Field(() => String)
   email: string;
 
+  @IsString()
+  @Field(() => String)
+  role: string;
+
   @IsInt()
   @Field(() => Int)
   id: number;
