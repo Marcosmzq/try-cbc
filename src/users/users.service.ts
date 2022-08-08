@@ -55,13 +55,14 @@ export class UsersService {
   }
 
   async upgradeAccount(user: User) {
+    let res = '';
     if (user.role === UserRole.PREMIUM_USER) {
-      return 'You are already a premium user, enjoy your membership.';
+      res = 'Ya sos un usuario premiun, disfruta tu membresia.';
     }
     const checkIfUserBuyPremium =
       await this.checkoutService.checkIfUserHasApprovedPayments(user.id);
     if (!checkIfUserBuyPremium) {
-      return `We did not find approved payments associated with your account, try again later or if you think this is an error, send us an email. @${process.env.NODEMAILER_AUTH_USER} `;
+      res = `No encontramos pagos aprobados realizados por vos, fijate si el pago se realizó correctamente, si crees que esto se trata de un error comunicate con nostros y solucionemos el problema. ${process.env.NODEMAILER_AUTH_USER} `;
     }
     if (
       checkIfUserBuyPremium &&
@@ -69,7 +70,9 @@ export class UsersService {
     ) {
       user.role = UserRole.PREMIUM_USER;
       await this.userRepository.save(user);
-      return 'We update your role, congratulations you are a premium user now! Remember that you must log out and log in again to see the changes reflected.';
+      res =
+        'Ya actualizamos tu cuenta. Ahora sos un usuario premiun, felicitaciones!. Recordá que para ver reflejados los cambios debes cerrar sesion e ingresar nuevamente. ';
     }
+    return res;
   }
 }
