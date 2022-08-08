@@ -13,7 +13,7 @@ ConfigModule.forRoot();
 
 const ormConfigProd: ConnectionOptions = {
   type: 'postgres',
-  url: process.env.DB_URL_CONNECTION,
+  url: process.env.DATABASE_URL,
   synchronize: false,
   ssl: true,
   migrationsRun: true,
