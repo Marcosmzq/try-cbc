@@ -3,11 +3,11 @@ import { TriviasService } from './trivias.service';
 import { TriviasResolver } from './trivias.resolver';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Trivia } from './entities/trivia.entity';
-import { TriviasAnswersModule } from 'src/trivias-answers/trivias-answers.module';
-import { Course } from 'src/courses/entities/course.entity';
+import { CoursesModule } from 'src/courses/courses.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Trivia, Course]), TriviasAnswersModule],
+  imports: [TypeOrmModule.forFeature([Trivia]), CoursesModule],
   providers: [TriviasResolver, TriviasService],
+  exports: [TriviasService],
 })
 export class TriviasModule {}

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AuthenticationError, UserInputError } from 'apollo-server-express';
+import { AuthenticationError } from 'apollo-server-express';
 import { Repository } from 'typeorm';
 import { CreateUserInput } from './dto/create-user.input';
 import { User } from './entities/user.entity';
@@ -18,10 +18,11 @@ export class UsersService {
 
   async create(createUserInput: CreateUserInput) {
     const newUser = this.userRepository.create(createUserInput);
+
     return this.userRepository.save(newUser);
   }
 
-  findAll() {
+  async findAll() {
     return this.userRepository.find();
   }
 
@@ -33,9 +34,8 @@ export class UsersService {
     return this.userRepository.findOne({ email });
   }
 
-  remove(id: number) {
-    this.userRepository.delete(id);
-    return true;
+  async remove(userIdToDelete: number) {
+    return this.userRepository.delete(userIdToDelete);
   }
 
   async updatePassword(hashedNewPassword: string, user: User) {
@@ -46,7 +46,7 @@ export class UsersService {
   async changeRole(changeRoleInput: ChangeRoleInput) {
     const { userID, adminSecretKey, newRole } = changeRoleInput;
     if (adminSecretKey !== process.env.ADMIN_SECRET_KEY) {
-      throw new AuthenticationError('You can not do this action.');
+      throw new AuthenticationError('Admin key invalid.');
     }
     const user = await this.userRepository.findOne(userID);
     if (!user) throw new AuthenticationError('User not found');
@@ -54,17 +54,25 @@ export class UsersService {
     return this.userRepository.save(user);
   }
 
-  async upgradeAccount(userID: number) {
-    const checkIfUserBuyPremium =
-      await this.checkoutService.checkIfUserHasApprovedPayments(userID);
-    const user = await this.userRepository.findOne(userID);
-    if (!checkIfUserBuyPremium || !user) {
-      return false;
+  async upgradeAccount(user: User) {
+    let res = '';
+    if (user.role === UserRole.PREMIUM_USER) {
+      res = 'Ya sos un usuario premiun, disfruta tu membresia.';
     }
-    if (checkIfUserBuyPremium) {
+    const checkIfUserBuyPremium =
+      await this.checkoutService.checkIfUserHasApprovedPayments(user.id);
+    if (!checkIfUserBuyPremium) {
+      res = `No encontramos pagos aprobados realizados por vos, fijate si el pago se realizó correctamente, si crees que esto se trata de un error comunicate con nostros y solucionemos el problema. ${process.env.NODEMAILER_AUTH_USER} `;
+    }
+    if (
+      checkIfUserBuyPremium &&
+      user.role !== (UserRole.PREMIUM_USER || UserRole.ADMIN)
+    ) {
       user.role = UserRole.PREMIUM_USER;
       await this.userRepository.save(user);
-      return true;
+      res =
+        'Ya actualizamos tu cuenta. Ahora sos un usuario premiun, felicitaciones!. Recordá que para ver reflejados los cambios debes cerrar sesion e ingresar nuevamente. ';
     }
+    return res;
   }
 }

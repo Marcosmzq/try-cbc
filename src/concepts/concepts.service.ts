@@ -1,40 +1,33 @@
-import { Dependencies, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../users/entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateConceptInput } from './dto/create-concept.input';
 import { UpdateConceptInput } from './dto/update-concept.input';
 import { Concept } from './entities/concept.entity';
-import { UsersService } from '../users/users.service';
 import { UserInputError } from 'apollo-server-express';
-import { CoursesService } from 'src/courses/courses.service';
+import { CoursesService } from '../courses/courses.service';
+import { User } from 'src/users/entities/user.entity';
+import { UserRole } from 'src/users/enums/userRole.enum';
+import { Course } from 'src/courses/entities/course.entity';
 
 @Injectable()
-@Dependencies(UsersService, CoursesService)
 export class ConceptsService {
   constructor(
     @InjectRepository(Concept)
     private readonly conceptRepository: Repository<Concept>,
-    private readonly userService: UsersService,
-    private readonly courseService: CoursesService,
+    private readonly coursesService: CoursesService,
   ) {}
 
-  async create(createConceptInput: CreateConceptInput) {
-    const { author_id, course_id, title, description } = createConceptInput;
-    const user = await this.userService.findOne(author_id);
-    if (!user)
-      throw new UserInputError(
-        'The author id passed not belongs to any user. Try with other.',
-      );
-    const course = await this.courseService.findOne(course_id);
-    if (!course)
-      throw new UserInputError(
-        'The course id passed is not valid. Try with other.',
-      );
+  async create(
+    currentUser: User,
+    course: Course,
+    createConceptInput: CreateConceptInput,
+  ) {
+    const { title, description } = createConceptInput;
     const newConcept = this.conceptRepository.create({
       title,
       description,
-      author: user,
+      author: currentUser,
       course,
     });
     return this.conceptRepository.save(newConcept);
@@ -56,31 +49,45 @@ export class ConceptsService {
     return this.conceptRepository.find({ course: { id: course_id } });
   }
 
-  async update(concept_id: number, updateConceptInput: UpdateConceptInput) {
-    const { author_id, course_id, description, title } = updateConceptInput;
-    const concept = await this.conceptRepository.findOne(concept_id);
-    if (author_id) {
-      const updatedAuthor = await this.userService.findOne(author_id);
-      if (!updatedAuthor)
-        throw new UserInputError(
-          'The author id passed not belongs to any user. Try with other.',
-        );
-      concept.author = updatedAuthor;
-    }
-    if (course_id) {
-      const updatedCourse = await this.courseService.findOne(course_id);
-      if (!updatedCourse)
-        throw new UserInputError(
-          'The course id passed not belongs to any course. Try with other.',
-        );
-      concept.course = updatedCourse;
-    }
+  findCurrentUserConceptsByCourse(currentUser: User, course: Course) {
+    return this.conceptRepository.find({
+      where: {
+        course,
+        author: currentUser,
+      },
+    });
+  }
+
+  findCurrentUserRandomConceptByCourse(currentUser: User, course: Course) {
+    return this.conceptRepository
+      .createQueryBuilder('concept')
+      .leftJoinAndSelect('concept.author', 'author')
+      .leftJoinAndSelect('concept.course', 'course')
+      .orderBy('RANDOM()')
+      .where({
+        course,
+        author: currentUser,
+      })
+      .getOne();
+  }
+
+  findAllAdminConceptsByCourse(course_id: number) {
+    return this.conceptRepository.find({
+      where: {
+        course: { id: course_id },
+        author: { role: UserRole.ADMIN },
+      },
+    });
+  }
+
+  async update(concept: Concept, updateConceptInput: UpdateConceptInput) {
+    const { description, title } = updateConceptInput;
     if (title) concept.title = title;
     if (description) concept.description = description;
     return this.conceptRepository.save(concept);
   }
 
-  remove(id: number) {
-    return this.conceptRepository.delete(id);
+  remove(concept_id: number) {
+    return this.conceptRepository.delete(concept_id);
   }
 }

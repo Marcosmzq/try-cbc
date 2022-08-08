@@ -7,19 +7,19 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { TriviasModule } from './trivias/trivias.module';
 import { CheckoutModule } from './checkout/checkout.module';
-import { RolesGuard } from './users/guards/roles.guard';
-import { TerminusModule } from '@nestjs/terminus';
-import { HealthCheckController } from './health-check/health-check.controller';
 import { TriviasAnswersModule } from './trivias-answers/trivias-answers.module';
 import { CoursesModule } from './courses/courses.module';
 import { AuthModule } from './auth/auth.module';
 import { NodemailerModule } from './nodemailer/nodemailer.module';
 import * as ormConfig from './ormconfig';
 import { ConceptsModule } from './concepts/concepts.module';
+import { QuotesModule } from './quotes/quotes.module';
+import { NotesModule } from './notes/notes.module';
+import { TimelinesModule } from './timelines/timelines.module';
+import { TimelineEventsModule } from './timeline-events/timeline-events.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    TerminusModule,
     TypeOrmModule.forRoot({
       ...ormConfig,
       keepConnectionAlive: true,
@@ -38,14 +38,12 @@ import { ConceptsModule } from './concepts/concepts.module';
     AuthModule,
     NodemailerModule,
     ConceptsModule,
+    QuotesModule,
+    NotesModule,
+    TimelinesModule,
+    TimelineEventsModule,
   ],
-  controllers: [AppController, HealthCheckController],
-  providers: [
-    AppService,
-    {
-      provide: 'APP_GUARD',
-      useClass: RolesGuard,
-    },
-  ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

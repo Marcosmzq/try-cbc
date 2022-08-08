@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { TriviasAnswersService } from './trivias-answers.service';
 import { TriviasAnswersResolver } from './trivias-answers.resolver';
-import { Trivia } from 'src/trivias/entities/trivia.entity';
 import { TriviasAnswer } from './entities/trivias-answer.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { TriviasModule } from 'src/trivias/trivias.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Trivia, TriviasAnswer])],
+  imports: [TypeOrmModule.forFeature([TriviasAnswer]), TriviasModule],
   providers: [TriviasAnswersResolver, TriviasAnswersService],
 })
 export class TriviasAnswersModule {}

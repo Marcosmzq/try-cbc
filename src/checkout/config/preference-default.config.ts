@@ -5,19 +5,19 @@ export const preferenceDefaultConfig = (userID: number) => {
     external_reference: userID.toString(),
     items: [
       {
-        title: 'Comprar cuenta PREMIUN de tryCBC',
+        title: 'Comprar el curso tryCBC y aprobá fácil.',
         category_id: 'learnings',
         currency_id: 'ARS',
-        unit_price: 500,
+        unit_price: 2499,
         quantity: 1,
         description:
-          'Potencia tu cuenta de tryCBC y desbloquea beneficios, ejercicios y materias exlusivas. ¡Mejora tu cuenta y lleva tu aprendizaje a otro nivel!',
+          'Deja de sufrir estudiando y APROBA MÁS FÁCIL con las funciones que tenemos preparadas para vos',
       },
     ],
     back_urls: {
-      success: `${process.env.CLIENT_URL}/premium/buy-response`,
-      failure: `${process.env.CLIENT_URL}/premium/buy-response`,
-      pending: `${process.env.CLIENT_URL}/premium/buy-response`,
+      success: `${process.env.CLIENT_URL}/buy-response`,
+      failure: `${process.env.CLIENT_URL}/buy-response`,
+      pending: `${process.env.CLIENT_URL}/buy-response`,
     },
     auto_return: 'approved',
   };

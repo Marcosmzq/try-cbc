@@ -1,31 +1,40 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
-import { ValidationPipe } from '@nestjs/common';
+import { UseGuards, ValidationPipe } from '@nestjs/common';
 import { ChangeRoleInput } from './dto/change-role.input';
-import { UserRole } from './enums/userRole.enum';
-import { Roles } from '../docorators/roles.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { AdminAuthGuard } from 'src/auth/guards/admin-role.guard';
+import { CurrentUser } from './decorators/current-user.decorator';
 
 @Resolver(() => User)
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
+  @UseGuards(AdminAuthGuard)
   @Query(() => [User], { name: 'findAllUsers' })
-  @Roles(UserRole.ADMIN)
   findAll() {
     return this.usersService.findAll();
   }
 
+  @UseGuards(AdminAuthGuard)
   @Query(() => User, { name: 'findUserByID' })
-  @Roles(UserRole.ADMIN, UserRole.FREE_USER, UserRole.PREMIUM_USER)
   findOne(@Args('id', { type: () => Int }) id: number) {
     return this.usersService.findOne(id);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Query(() => User, { name: 'findCurrentUser' })
+  findCurrentUser(@CurrentUser() currentUser: User) {
+    return currentUser;
+  }
+
+  @UseGuards(AdminAuthGuard)
   @Mutation(() => Boolean, { name: 'deleteUserByID' })
-  @Roles(UserRole.ADMIN)
-  removeUser(@Args('id', { type: () => Int }) id: number) {
-    return this.usersService.remove(id);
+  removeUser(
+    @Args('userIdToDelete', { type: () => Int }) userIdToDelete: number,
+  ) {
+    return this.usersService.remove(userIdToDelete);
   }
 
   @Mutation(() => User, { name: 'changeUserRole' })
@@ -36,8 +45,9 @@ export class UsersResolver {
     return this.usersService.changeRole(changeRoleInput);
   }
 
-  @Mutation(() => Boolean, { name: 'upgradeUserAccount' })
-  upgradeAccount(@Args('userID') userID: number) {
-    return this.usersService.upgradeAccount(userID);
+  @UseGuards(JwtAuthGuard)
+  @Mutation(() => String, { name: 'upgradeCurrentUserAccount' })
+  upgradeAccount(@CurrentUser() currentUser: User) {
+    return this.usersService.upgradeAccount(currentUser);
   }
 }
