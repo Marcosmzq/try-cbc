@@ -10,6 +10,7 @@ import { CourseByIdPipe } from 'src/courses/pipes/course-by-id.pipe';
 import { Course } from 'src/courses/entities/course.entity';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { TriviaByIdPipe } from './pipes/trivia-by-id.pipe';
+import { PremiumContentGuard } from 'src/auth/guards/premiun-content.guard';
 
 @Resolver(() => Trivia)
 export class TriviasResolver {
@@ -37,7 +38,7 @@ export class TriviasResolver {
     return this.triviasService.findOne(id);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PremiumContentGuard)
   @Query(() => Trivia, { name: 'getRandomTriviaByParams' })
   getRandomTrivia(
     @Args('course_id', { type: () => Int }, CourseByIdPipe) course: Course,
@@ -46,7 +47,7 @@ export class TriviasResolver {
     return this.triviasService.getRandomTrivia(course, exam);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PremiumContentGuard)
   @Query(() => Trivia, { name: 'getRandomFlashcardByParams' })
   getRandomFlashcard(
     @Args('course_id', { type: () => Int }, CourseByIdPipe) course: Course,
